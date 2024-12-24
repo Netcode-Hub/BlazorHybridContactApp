@@ -1,0 +1,41 @@
+﻿@page "/"
+@using BlazorHybridContactApp.Model
+@using BlazorHybridContactApp.Service
+@inject IContact contactService
+
+<button class="btn btn-primary" @onclick="SelectContact">Select Contact</button>
+@if (SelectedContact != null)
+{
+    <ul>
+        <li>ID: @SelectedContact.Id</li>
+        <li>NAME: @SelectedContact.Name</li>
+        <li>EMAIL: @SelectedContact.Email</li>
+    </ul>
+}
+
+@if (Contacts.Any())
+{
+    <ul class="list-group">
+        @foreach(var item in Contacts)
+        {
+            <li class="list-group-item">ID:@item.Id</li>
+            <li class="list-group-item">NAME: @item.Name</li>
+            <li class="list-group-item">PHONE NUMBER: @item.PhoneNumber</li>
+            <li class="list-group-item">EMAIL: @item.Email</li>
+        }
+    </ul>
+}
+
+@code{
+    MyContact? SelectedContact = new();
+    List<MyContact> Contacts = [];
+    async Task SelectContact()
+    {
+        SelectedContact = await contactService.SelectContact()!;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Contacts = await contactService.GetAll();
+    }
+}
